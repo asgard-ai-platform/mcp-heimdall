@@ -1,56 +1,54 @@
 import os
 
-# =============================================================================
-# TODO: Update these values for your service
-# =============================================================================
-
-# API base URL
-BASE_URL = "https://api.example.com"
-
-# API version prefix
+BASE_URL = os.environ.get("AUTO_POST_API_BASE_URL", "")
 API_VERSION = "v1"
+DEFAULT_PER_PAGE = 20
 
-# Default pagination size
-DEFAULT_PER_PAGE = 50
-
-# =============================================================================
-# Auth — choose ONE auth module and import it here
-# =============================================================================
-# For Bearer token auth:
-# from auth.bearer import get_auth_headers
-#
-# For API key auth:
-# from auth.api_key import get_auth_headers
-#
-# For OAuth 2.0 auth:
-# from auth.oauth2 import get_auth_headers
-#
-# For no auth (public APIs):
-# from auth.none import get_auth_headers
-
-from auth.bearer import get_auth_headers  # TODO: change to your auth module
-
-# =============================================================================
-# Endpoint map — define your API endpoints here
-# =============================================================================
-# Supports path parameter substitution: {param} will be replaced by kwargs
-#
-# Example:
-#   ENDPOINTS = {
-#       "orders": "/v1/orders",
-#       "order_detail": "/v1/orders/{order_id}",
-#       "products": "/v1/products",
-#       "product_detail": "/v1/products/{product_id}",
-#   }
+from auth.bearer import get_auth_headers
 
 ENDPOINTS = {
-    "list_items": f"/{API_VERSION}/items",
-    "get_item": f"/{API_VERSION}/items/{{item_id}}",
+    # article
+    "list_articles": f"/{API_VERSION}/article",
+    "get_article": f"/{API_VERSION}/article/{{article_id}}",
+    # article-template
+    "list_article_templates": f"/{API_VERSION}/article-template",
+    "get_article_template": f"/{API_VERSION}/article-template/{{article_template_id}}",
+    # avatar
+    "list_avatars": f"/{API_VERSION}/avatar",
+    "get_avatar": f"/{API_VERSION}/avatar/{{avatar_id}}",
+    # account
+    "list_accounts": f"/{API_VERSION}/account",
+    "get_account": f"/{API_VERSION}/account/{{account_id}}",
+    "get_accounts_by_avatar": f"/{API_VERSION}/account/by-avatar/{{avatar_id}}",
+    # app
+    "list_apps": f"/{API_VERSION}/app",
+    "get_app": f"/{API_VERSION}/app/{{app_id}}",
+    # blob
+    "list_blobs": f"/{API_VERSION}/blob",
+    # content-source
+    "list_content_sources": f"/{API_VERSION}/content-source",
+    "get_content_source": f"/{API_VERSION}/content-source/{{content_source_id}}",
+    # mission
+    "list_missions": f"/{API_VERSION}/mission",
+    "get_mission": f"/{API_VERSION}/mission/{{mission_id}}",
+    "export_mission": f"/{API_VERSION}/mission/{{mission_id}}/export",
+    # mission-content
+    "list_mission_contents": f"/{API_VERSION}/mission-content",
+    "get_mission_content": f"/{API_VERSION}/mission-content/{{mission_content_id}}",
+    # publication
+    "list_publications": f"/{API_VERSION}/publication",
+    "get_publication": f"/{API_VERSION}/publication/{{publication_id}}",
+    # topic
+    "list_topics": f"/{API_VERSION}/topic",
+    "get_topic": f"/{API_VERSION}/topic/{{topic_id}}",
+    "list_topic_categories": f"/{API_VERSION}/topic/categories",
+    # workspace
+    "list_workspaces": f"/{API_VERSION}/workspace",
+    "get_workspace": f"/{API_VERSION}/workspace/{{workspace_id}}",
 }
 
 
 def get_headers() -> dict:
-    """Get request headers including auth."""
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -60,18 +58,6 @@ def get_headers() -> dict:
 
 
 def get_url(endpoint_key: str, **kwargs) -> str:
-    """Build full URL for an endpoint with path parameter substitution.
-
-    Args:
-        endpoint_key: Key from ENDPOINTS dict.
-        **kwargs: Path parameters to substitute (e.g., item_id="123").
-
-    Returns:
-        Full URL string.
-
-    Raises:
-        KeyError: If endpoint_key not found in ENDPOINTS.
-    """
     path = ENDPOINTS[endpoint_key]
     if kwargs:
         path = path.format(**kwargs)

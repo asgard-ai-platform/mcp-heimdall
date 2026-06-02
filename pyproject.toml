@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 # TODO: Replace {service} with your service name (e.g., "mcp-ecpay")
-name = "mcp-{service}"
+name = "mcp-heimdall"
 version = "0.1.0"
-description = "MCP Server for {Service Name} — AI-callable tools via Model Context Protocol"
+description = "MCP Server for Asgard Auto Post API — AI-callable tools via Model Context Protocol"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
@@ -33,9 +33,11 @@ dependencies = [
 #   "paho-mqtt>=2.0.0",
 # ---------------------------------------------------------------------------
 
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
 [project.scripts]
-# TODO: Replace {service} with your service name
-mcp-service = "mcp_server:main"
+mcp-heimdall = "mcp_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["config", "connectors", "auth", "tools"]
@@ -43,3 +45,8 @@ packages = ["config", "connectors", "auth", "tools"]
 [tool.hatch.build.targets.wheel.force-include]
 "app.py" = "app.py"
 "mcp_server.py" = "mcp_server.py"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
