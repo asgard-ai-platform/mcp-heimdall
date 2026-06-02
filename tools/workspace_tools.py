@@ -1,5 +1,7 @@
 """Tools for workspace resources."""
 
+from typing import Annotated
+
 from pydantic import Field
 
 from app import mcp
@@ -14,7 +16,7 @@ def list_workspaces() -> dict:
 
 @mcp.tool()
 def get_workspace(
-    workspace_id: str = Field(description="Workspace ID"),
+    workspace_id: Annotated[str, Field(description="Workspace ID")],
 ) -> dict:
     """Get a workspace by ID."""
     return api_get(
