@@ -1,6 +1,6 @@
 # mcp-heimdall
 
-MCP (Model Context Protocol) server that exposes read-only tools for the [Asgard Auto Post API](https://auto-post-api.dev.asgard-ai.com/swagger/index.html).
+MCP (Model Context Protocol) server that exposes read-only tools for the Asgard Auto Post API.
 
 Provides `list` and `get` tools for all major resources: articles, blobs, content sources, article templates, avatars, accounts, apps, missions, mission contents, publications, topics, and workspaces.
 

@@ -1,59 +1,72 @@
 # Contributing
 
-Thank you for contributing to this MCP Server!
+Thank you for contributing to mcp-heimdall!
 
 ## Setup
 
 ```bash
-git clone https://github.com/asgard-ai-platform/mcp-{service}.git
-cd mcp-{service}
-uv venv && source .venv/bin/activate
-uv pip install -e .
+git clone https://github.com/asgard-ai-platform/mcp-heimdall.git
+cd mcp-heimdall
+uv sync
 cp .env.example .env
 # Edit .env with your credentials
 ```
 
 ## Adding a New Tool
 
-1. **Choose module**: Pick an existing file in `tools/` or create a new `tools/{domain}_tools.py`
-2. **Import helpers**: `from connectors.rest_client import api_get, fetch_all_pages`
+1. **Choose module**: Pick an existing file in `src/mcp_heimdall/tools/` or create a new `src/mcp_heimdall/tools/{domain}_tools.py`
+2. **Import helpers**: 
+   ```python
+   from ..connectors.rest_client import api_get
+   from ..app import mcp
+   ```
 3. **Write the tool**:
    ```python
-   from app import mcp
+   from typing import Annotated
    from pydantic import Field
+   from ..app import mcp
+   from ..connectors.rest_client import api_get
 
    @mcp.tool()
    def my_new_tool(
-       param: str = Field(description="What this param does"),
+       workspace_id: Annotated[str, Field(description="Workspace ID")],
+       param: Annotated[str, Field(description="What this param does")] = "default",
    ) -> dict:
        """What this tool does — shown in MCP tools/list."""
        data = api_get("endpoint_key", path_params={"id": param})
        return {"result": data}
    ```
-4. **Register**: If you created a new module, add `import tools.{module}  # noqa: F401` in `mcp_server.py`
+4. **Register**: If you created a new module, add it to the imports in `src/mcp_heimdall/server.py`:
+   ```python
+   from .tools import your_new_module  # noqa: F401
+   ```
 5. **Test**: Add a test case in `tests/test_all_tools.py`
-6. **Verify**: Run `python tests/test_all_tools.py`
+6. **Verify**: Run `uv run pytest tests/test_all_tools.py -v`
 
 ## Code Conventions
 
 - English for code, docstrings, and tool descriptions
-- Use connector helpers from `connectors/` — never call `requests` directly in tool functions
+- Use connector helpers from `src/mcp_heimdall/connectors/` — never call `requests` directly in tool functions
+- Use relative imports within the package: `from ..app import mcp`, `from ..config.settings import ...`
 - All tools return `dict`
-- Use Pydantic `Field()` for parameter descriptions
-- Only add dependencies that your connector type requires
+- Use Pydantic `Field()` with `Annotated` for parameter descriptions and defaults
+- Use `Annotated[type, Field(...)]` pattern to avoid FieldInfo leaks when calling functions directly
 
 ## Testing
 
-All tests run against the live API:
+All tests use mocked HTTP responses:
 ```bash
-python scripts/auth/test_connection.py   # Validate credentials
-python tests/test_all_tools.py           # Run all tool tests
+# Validate credentials against live API
+uv run python scripts/auth/test_connection.py
+
+# Run all tool unit tests (no live API needed)
+uv run pytest tests/test_all_tools.py -v
 ```
 
 ## Pull Requests
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/add-new-tool`
+2. Create a feature branch: `git checkout -b feat/add-workspace-export`
 3. Make your changes
-4. Run tests
-5. Submit a PR with a clear description
+4. Run tests to ensure they pass
+5. Submit a PR with a clear description of the changes and any new tools added
