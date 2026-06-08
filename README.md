@@ -14,7 +14,9 @@ uv sync
 
 # 2. Copy and fill in your credentials
 cp .env.example .env
-# Edit .env — set AUTO_POST_API_TOKEN=<your bearer token>
+# Edit .env — set both required variables:
+#   AUTO_POST_API_TOKEN=<your bearer token>
+#   AUTO_POST_API_BASE_URL=<API base URL>
 ```
 
 ---
@@ -22,7 +24,12 @@ cp .env.example .env
 ## Run
 
 ```bash
-uv run python mcp_server.py
+uv run mcp-heimdall
+```
+
+Or explicitly:
+```bash
+uv run python -m mcp_heimdall.server
 ```
 
 ---
@@ -149,9 +156,10 @@ Add this to your MCP client config (e.g. Claude Desktop `claude_desktop_config.j
   "mcpServers": {
     "heimdall": {
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/mcp-heimdall", "python", "mcp_server.py"],
+      "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
       "env": {
-        "AUTO_POST_API_TOKEN": "your_bearer_token_here"
+        "AUTO_POST_API_TOKEN": "your_bearer_token_here",
+        "AUTO_POST_API_BASE_URL": "https://auto-post-api.example.com"
       }
     }
   }
@@ -169,7 +177,7 @@ Or with a `.env` file:
         "run",
         "--env-file", "/path/to/mcp-heimdall/.env",
         "--directory", "/path/to/mcp-heimdall",
-        "python", "mcp_server.py"
+        "mcp-heimdall"
       ]
     }
   }
@@ -182,12 +190,13 @@ Or with a `.env` file:
 
 ```
 stdio (JSON-RPC 2.0)
-  → mcp_server.py               — entry point, imports trigger tool registration
-    → app.py                    — MCPServer singleton (FastMCP "mcp-heimdall")
-      → tools/*_tools.py        — @mcp.tool() decorated functions
-        → connectors/rest_client.py  — HTTP client with retry + extra_headers support
-          → auth/bearer.py           — reads AUTO_POST_API_TOKEN env var
-            → config/settings.py    — base URL + endpoint map
+  → mcp-heimdall (console script entry point)
+    → src/mcp_heimdall/server.py       — entry point, imports trigger tool registration
+      → src/mcp_heimdall/app.py        — MCPServer singleton (FastMCP "mcp-heimdall")
+        → src/mcp_heimdall/tools/*     — @mcp.tool() decorated functions
+          → src/mcp_heimdall/connectors/rest_client.py  — HTTP client with retry + extra_headers support
+            → src/mcp_heimdall/auth/bearer.py           — reads AUTO_POST_API_TOKEN env var
+              → src/mcp_heimdall/config/settings.py     — base URL + endpoint map
 ```
 
 ## License
