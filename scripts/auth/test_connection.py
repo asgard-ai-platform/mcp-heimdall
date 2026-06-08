@@ -10,18 +10,18 @@ Usage:
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src"))
 
-from config.settings import get_headers, get_url, BASE_URL
+from mcp_heimdall.config.settings import get_headers, get_url, BASE_URL
 
 
 def check_env_vars():
     """Check that required environment variables are set."""
     print("Checking environment variables...")
 
-    # TODO: Update with your required env vars
     required_vars = [
-        "SERVICE_API_TOKEN",
+        "AUTO_POST_API_TOKEN",
+        "AUTO_POST_API_BASE_URL",
     ]
 
     missing = [var for var in required_vars if not os.environ.get(var)]
@@ -44,12 +44,10 @@ def check_connection():
 
     try:
         headers = get_headers()
-        # TODO: Replace with a lightweight endpoint for your service
-        url = get_url("list_items")
+        url = get_url("list_workspaces")
         response = requests.get(
             url,
             headers=headers,
-            params={"per_page": 1},
             timeout=15,
         )
 
