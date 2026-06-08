@@ -1,6 +1,6 @@
 # mcp-heimdall
 
-Asgard Auto Post API 的 MCP (Model Context Protocol) 伺服器，提供 AI 可呼叫的只讀工具。
+**Heimdall** — Asgard Auto Post API 的 MCP (Model Context Protocol) 伺服器，提供 AI 可呼叫的只讀工具。
 
 ## 設置
 
