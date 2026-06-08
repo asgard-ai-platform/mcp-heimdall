@@ -14,8 +14,8 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
-os.environ.setdefault("AUTO_POST_API_TOKEN", "test-token")
-os.environ.setdefault("AUTO_POST_API_BASE_URL", "https://api.example.com")
+os.environ.setdefault("HEIMDALL_API_TOKEN", "test-token")
+os.environ.setdefault("HEIMDALL_API_BASE_URL", "https://api.example.com")
 
 import mcp_heimdall.tools.article_tools  # noqa: F401
 import mcp_heimdall.tools.avatar_tools  # noqa: F401

@@ -2,8 +2,7 @@
 
 import os
 
-# TODO: Rename to match your service (e.g., SHOPLINE_API_TOKEN)
-ENV_VAR_NAME = "AUTO_POST_API_TOKEN"
+ENV_VAR_NAME = "HEIMDALL_API_TOKEN"
 
 
 def get_auth_headers() -> dict:

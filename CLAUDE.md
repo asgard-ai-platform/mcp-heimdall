@@ -1,58 +1,84 @@
-# MCP Server Template
+# mcp-heimdall
 
-## Overview
-This is a template for building MCP (Model Context Protocol) servers that expose AI-callable tools over stdio JSON-RPC 2.0. Part of the Asgard open-source ecosystem.
+**Heimdall** — Asgard 內容管理平台的 MCP (Model Context Protocol) 伺服器，提供 AI 可呼叫的只讀工具。
 
-## Setup
+## 設置
+
 ```bash
-# Initialize project (replaces {service} placeholders)
-uv run --no-project python scripts/init.py
-
+# 安裝依賴
 uv sync
+
+# 設定認證
+cp .env.example .env
+# 編輯 .env — 設定 HEIMDALL_API_TOKEN 和 HEIMDALL_API_BASE_URL
 ```
 
-## Run
+## 執行
+
 ```bash
-uv run python mcp_server.py
+uv run mcp-heimdall
 ```
 
-## Test
+## 測試
+
 ```bash
-# Test connection
-uv run --env-file .env python scripts/auth/test_connection.py
+# 測試連線
+uv run python scripts/auth/test_connection.py
 
-# Run all tool tests
-uv run --env-file .env python tests/test_all_tools.py
+# 執行所有工具測試
+uv run pytest tests/test_all_tools.py -v
 ```
 
-## Architecture
+## 架構
 
 ```
 stdio (JSON-RPC 2.0)
-  → mcp_server.py (entry point, side-effect imports trigger tool registration)
-    → app.py (MCPServer singleton)
-      → tools/*_tools.py (@mcp.tool() decorated functions)
-        → connectors/*_client.py (data source connectors)
-          → auth/*.py (authentication)
-            → config/settings.py (endpoints, URL builder)
+  → mcp-heimdall (console script entry point)
+    → src/mcp_heimdall/server.py (entry point, side-effect imports trigger tool registration)
+      → src/mcp_heimdall/app.py (MCPServer singleton)
+        → src/mcp_heimdall/tools/*.py (@mcp.tool() decorated functions)
+          → src/mcp_heimdall/connectors/rest_client.py (HTTP REST connector)
+            → src/mcp_heimdall/auth/bearer.py (Bearer token authentication)
+              → src/mcp_heimdall/config/settings.py (API endpoints, URL builder)
 ```
 
-### Key Patterns
-- **Singleton**: `app.py` creates the `MCPServer` instance, imported everywhere
-- **Decorator registration**: `@mcp.tool()` with Pydantic `Field()` for typed parameters
-- **Side-effect imports**: `mcp_server.py` imports tool modules to trigger registration
-- **Pluggable connectors**: `connectors/` — REST, RSS, Scraper, MQTT, GraphQL
-- **Pluggable auth**: `auth/` — Bearer, API Key, OAuth 2.0, None
+## 工具概覽
 
-### Adding a New Tool
-1. Choose the appropriate tool module in `tools/` (or create a new one)
-2. Import your connector: `from connectors.rest_client import api_get`
-3. Write the tool function with `@mcp.tool()` decorator
-4. Add the module import in `mcp_server.py` (if new module)
-5. Add a test in `tests/test_all_tools.py`
+23 個 MCP 工具涵蓋 12 個資源類型：
 
-### Code Conventions
-- English for all code, docstrings, and tool descriptions
-- Use connector helpers — don't call `requests` directly in tools
-- All tools return `dict`
-- Use `Pydantic Field()` for parameter descriptions and defaults
+- **Workspace**: list, get
+- **Article**: list, get, list_templates, get_template
+- **Avatar**: list, get
+- **Account**: list, get, get_by_avatar
+- **App**: list, get
+- **Blob**: list
+- **Content Source**: list, get
+- **Mission**: list, get, export, list_contents, get_content
+- **Publication**: list, get
+- **Topic**: list, get, list_categories
+
+## 關鍵模式
+
+- **套件結構**: `src/mcp_heimdall/` — 標準 src-layout 結構
+- **單例模式**: `app.py` 建立 `MCPServer` 實例
+- **裝飾器註冊**: `@mcp.tool()` 配合 Pydantic `Annotated[type, Field(...)]`
+- **工具發現**: `server.py` 匯入工具模組以觸發註冊
+- **連接器**: 僅使用 REST API connector（`rest_client.py`）
+- **認證**: Bearer Token 認證（`auth/bearer.py`）
+- **相對匯入**: 所有工具使用相對匯入 (`from ..app import mcp`, `from ..connectors.rest_client import api_get`)
+
+## 新增工具
+
+1. 選擇適當的工具模組在 `src/mcp_heimdall/tools/` 中
+2. 匯入連接器: `from ..connectors.rest_client import api_get`
+3. 使用 `@mcp.tool()` 裝飾器編寫工具函數
+4. 若建立新模組，在 `src/mcp_heimdall/server.py` 中新增匯入
+5. 在 `tests/test_all_tools.py` 中新增測試
+
+## 程式碼規範
+
+- 英文編寫所有程式碼、文件字串和工具說明
+- 使用 `Annotated[type, Field(...)]` 模式作為參數描述和預設值
+- 所有工具返回 `dict`
+- 在工具函數中絕不直接呼叫 `requests` — 使用連接器幫手
+- 使用相對匯入以保持套件獨立性

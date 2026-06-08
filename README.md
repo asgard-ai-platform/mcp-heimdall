@@ -1,6 +1,6 @@
 # mcp-heimdall
 
-MCP (Model Context Protocol) server that exposes read-only tools for the [Asgard Auto Post API](https://auto-post-api.dev.asgard-ai.com/swagger/index.html).
+Heimdall — an MCP (Model Context Protocol) server that exposes read-only tools for Asgard's content management platform.
 
 Provides `list` and `get` tools for all major resources: articles, blobs, content sources, article templates, avatars, accounts, apps, missions, mission contents, publications, topics, and workspaces.
 
@@ -15,8 +15,8 @@ uv sync
 # 2. Copy and fill in your credentials
 cp .env.example .env
 # Edit .env — set both required variables:
-#   AUTO_POST_API_TOKEN=<your bearer token>
-#   AUTO_POST_API_BASE_URL=<API base URL>
+#   HEIMDALL_API_TOKEN=<your bearer token>
+#   HEIMDALL_API_BASE_URL=<API base URL>
 ```
 
 ---
@@ -45,10 +45,10 @@ uv run python -m pytest tests/test_all_tools.py -v
 
 ## Configuration
 
-| Environment Variable     | Required | Default                                      | Description                  |
-|--------------------------|----------|----------------------------------------------|------------------------------|
-| `AUTO_POST_API_TOKEN`    | Yes      | —  | Bearer token for the API     |
-| `AUTO_POST_API_BASE_URL` | Yes      | —  | API base URL                 |
+| Environment Variable     | Required | Default | Description                  |
+|--------------------------|----------|---------|------------------------------|
+| `HEIMDALL_API_TOKEN`     | Yes      | —       | Bearer token for the API     |
+| `HEIMDALL_API_BASE_URL`  | Yes      | —       | API base URL                 |
 
 ---
 
@@ -158,8 +158,8 @@ Add this to your MCP client config (e.g. Claude Desktop `claude_desktop_config.j
       "command": "uv",
       "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
       "env": {
-        "AUTO_POST_API_TOKEN": "your_bearer_token_here",
-        "AUTO_POST_API_BASE_URL": "https://auto-post-api.example.com"
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here",
+        "HEIMDALL_API_BASE_URL": "https://heimdall.example.com"
       }
     }
   }
@@ -195,7 +195,7 @@ stdio (JSON-RPC 2.0)
       → src/mcp_heimdall/app.py        — MCPServer singleton (FastMCP "mcp-heimdall")
         → src/mcp_heimdall/tools/*     — @mcp.tool() decorated functions
           → src/mcp_heimdall/connectors/rest_client.py  — HTTP client with retry + extra_headers support
-            → src/mcp_heimdall/auth/bearer.py           — reads AUTO_POST_API_TOKEN env var
+            → src/mcp_heimdall/auth/bearer.py           — reads HEIMDALL_API_TOKEN env var
               → src/mcp_heimdall/config/settings.py     — base URL + endpoint map
 ```
 
