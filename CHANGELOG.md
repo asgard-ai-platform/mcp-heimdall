@@ -3,8 +3,8 @@
 ## [0.1.0] - 2026-06-08
 
 ### Added
-- Initial release of mcp-heimdall MCP server
-- Read-only tools for Asgard Auto Post API
+- Initial release of Heimdall MCP server
+- Read-only tools for Asgard Heimdall
 - 23 MCP tools across 12 resource types:
   - Workspace (list, get)
   - Article (list, get, list templates, get template)

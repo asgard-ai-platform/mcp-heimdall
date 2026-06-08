@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "mcp-heimdall"
 version = "0.1.0"
-description = "MCP Server for Asgard Auto Post API — AI-callable tools via Model Context Protocol"
+description = "Heimdall — MCP Server with AI-callable read-only tools via Model Context Protocol"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
@@ -17,7 +17,7 @@ keywords = [
     "mcp-server",
     "model-context-protocol",
     "ai-tools",
-    "auto-post-api",
+    "heimdall",
     "asgard",
 ]
 classifiers = [

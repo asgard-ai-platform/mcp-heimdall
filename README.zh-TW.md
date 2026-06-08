@@ -1,6 +1,6 @@
 # mcp-heimdall
 
-MCP (Model Context Protocol) 伺服器，為 Asgard Auto Post API 提供只讀工具。
+**Heimdall** — Asgard 內容管理平台的 MCP (Model Context Protocol) 伺服器，提供只讀工具。
 
 提供所有主要資源的 `list` 和 `get` 工具：文章、內容源、文章範本、頭像、帳戶、應用程式、任務、任務內容、發佈物、主題和工作區。
 
