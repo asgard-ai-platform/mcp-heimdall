@@ -14,9 +14,9 @@ uv sync
 
 # 2. 複製並填入認證資訊
 cp .env.example .env
-# 編輯 .env — 設定兩個必需變數：
+# 編輯 .env — 設定 token。除非需要覆寫，否則 base URL 可省略：
 #   HEIMDALL_API_TOKEN=<your bearer token>
-#   HEIMDALL_API_BASE_URL=<API base URL>
+#   HEIMDALL_API_BASE_URL=<API base URL override>
 ```
 
 ---
@@ -48,7 +48,7 @@ uv run python -m pytest tests/test_all_tools.py -v
 | 環境變數             | 必需 | 預設值 | 說明                 |
 |----------------------|------|--------|----------------------|
 | `HEIMDALL_API_TOKEN` | 是   | —     | API Bearer Token     |
-| `HEIMDALL_API_BASE_URL` | 是 | —     | API 基礎 URL          |
+| `HEIMDALL_API_BASE_URL` | 否 | `https://heimdall-api.asgard-ai.com` | API 基礎 URL 覆寫 |
 
 ---
 
@@ -158,8 +158,7 @@ uv run python -m pytest tests/test_all_tools.py -v
       "command": "uv",
       "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
       "env": {
-        "HEIMDALL_API_TOKEN": "your_bearer_token_here",
-        "HEIMDALL_API_BASE_URL": "https://heimdall.example.com"
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here"
       }
     }
   }

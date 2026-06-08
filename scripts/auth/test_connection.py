@@ -19,10 +19,7 @@ def check_env_vars():
     """Check that required environment variables are set."""
     print("Checking environment variables...")
 
-    required_vars = [
-        "HEIMDALL_API_TOKEN",
-        "HEIMDALL_API_BASE_URL",
-    ]
+    required_vars = ["HEIMDALL_API_TOKEN"]
 
     missing = [var for var in required_vars if not os.environ.get(var)]
 
@@ -33,6 +30,8 @@ def check_env_vars():
         return False
 
     print("  OK: All required environment variables are set.")
+    if not os.environ.get("HEIMDALL_API_BASE_URL"):
+        print(f"  INFO: HEIMDALL_API_BASE_URL not set; using default {BASE_URL}")
     return True
 
 

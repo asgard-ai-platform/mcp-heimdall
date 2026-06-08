@@ -10,7 +10,7 @@ uv sync
 
 # 設定認證
 cp .env.example .env
-# 編輯 .env — 設定 HEIMDALL_API_TOKEN 和 HEIMDALL_API_BASE_URL
+# 編輯 .env — 設定 HEIMDALL_API_TOKEN；HEIMDALL_API_BASE_URL 可選
 ```
 
 ## 執行

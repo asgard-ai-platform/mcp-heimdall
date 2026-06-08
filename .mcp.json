@@ -4,8 +4,7 @@
       "command": "uv",
       "args": ["run", "--directory", "${PWD}", "mcp-heimdall"],
       "env": {
-        "HEIMDALL_API_TOKEN": "${HEIMDALL_API_TOKEN}",
-        "HEIMDALL_API_BASE_URL": "${HEIMDALL_API_BASE_URL}"
+        "HEIMDALL_API_TOKEN": "${HEIMDALL_API_TOKEN}"
       }
     }
   }

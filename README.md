@@ -14,9 +14,9 @@ uv sync
 
 # 2. Copy and fill in your credentials
 cp .env.example .env
-# Edit .env — set both required variables:
+# Edit .env — set your token. The base URL is optional unless you need an override:
 #   HEIMDALL_API_TOKEN=<your bearer token>
-#   HEIMDALL_API_BASE_URL=<API base URL>
+#   HEIMDALL_API_BASE_URL=<API base URL override>
 ```
 
 ---
@@ -48,7 +48,7 @@ uv run python -m pytest tests/test_all_tools.py -v
 | Environment Variable     | Required | Default | Description                  |
 |--------------------------|----------|---------|------------------------------|
 | `HEIMDALL_API_TOKEN`     | Yes      | —       | Bearer token for the API     |
-| `HEIMDALL_API_BASE_URL`  | Yes      | —       | API base URL                 |
+| `HEIMDALL_API_BASE_URL`  | No       | `https://heimdall-api.asgard-ai.com` | API base URL override |
 
 ---
 
@@ -158,8 +158,7 @@ Add this to your MCP client config (e.g. Claude Desktop `claude_desktop_config.j
       "command": "uv",
       "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
       "env": {
-        "HEIMDALL_API_TOKEN": "your_bearer_token_here",
-        "HEIMDALL_API_BASE_URL": "https://heimdall.example.com"
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here"
       }
     }
   }
