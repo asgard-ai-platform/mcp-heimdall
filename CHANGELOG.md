@@ -16,7 +16,7 @@
   - Mission (list, get, export, list contents, get content)
   - Publication (list, get)
   - Topic (list, get, list categories)
-- Bearer token authentication via AUTO_POST_API_TOKEN environment variable
+- Bearer token authentication via HEIMDALL_API_TOKEN environment variable
 - Workspace-scoped requests via x-asgard-workspace header
 - Pagination support with configurable page/size parameters
 - Optional filtering parameters (name, provider_type, status, etc.)

@@ -1,6 +1,6 @@
 import os
 
-BASE_URL = os.environ.get("AUTO_POST_API_BASE_URL", "")
+BASE_URL = os.environ.get("HEIMDALL_API_BASE_URL", "")
 API_VERSION = "v1"
 DEFAULT_PER_PAGE = 20
 

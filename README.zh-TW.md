@@ -15,8 +15,8 @@ uv sync
 # 2. 複製並填入認證資訊
 cp .env.example .env
 # 編輯 .env — 設定兩個必需變數：
-#   AUTO_POST_API_TOKEN=<your bearer token>
-#   AUTO_POST_API_BASE_URL=<API base URL>
+#   HEIMDALL_API_TOKEN=<your bearer token>
+#   HEIMDALL_API_BASE_URL=<API base URL>
 ```
 
 ---
@@ -47,8 +47,8 @@ uv run python -m pytest tests/test_all_tools.py -v
 
 | 環境變數             | 必需 | 預設值 | 說明                 |
 |----------------------|------|--------|----------------------|
-| `AUTO_POST_API_TOKEN` | 是   | —     | API Bearer Token     |
-| `AUTO_POST_API_BASE_URL` | 是 | —     | API 基礎 URL          |
+| `HEIMDALL_API_TOKEN` | 是   | —     | API Bearer Token     |
+| `HEIMDALL_API_BASE_URL` | 是 | —     | API 基礎 URL          |
 
 ---
 
@@ -158,8 +158,8 @@ uv run python -m pytest tests/test_all_tools.py -v
       "command": "uv",
       "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
       "env": {
-        "AUTO_POST_API_TOKEN": "your_bearer_token_here",
-        "AUTO_POST_API_BASE_URL": "https://auto-post-api.example.com"
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here",
+        "HEIMDALL_API_BASE_URL": "https://heimdall.example.com"
       }
     }
   }
@@ -195,7 +195,7 @@ stdio (JSON-RPC 2.0)
       → src/mcp_heimdall/app.py        — MCPServer 單例 (FastMCP "mcp-heimdall")
         → src/mcp_heimdall/tools/*     — @mcp.tool() 裝飾的函數
           → src/mcp_heimdall/connectors/rest_client.py  — HTTP 客戶端（含重試 + extra_headers 支援）
-            → src/mcp_heimdall/auth/bearer.py           — 讀取 AUTO_POST_API_TOKEN 環境變數
+            → src/mcp_heimdall/auth/bearer.py           — 讀取 HEIMDALL_API_TOKEN 環境變數
               → src/mcp_heimdall/config/settings.py     — 基礎 URL + 端點對應表
 ```
 

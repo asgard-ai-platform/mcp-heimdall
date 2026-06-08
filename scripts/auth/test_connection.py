@@ -20,8 +20,8 @@ def check_env_vars():
     print("Checking environment variables...")
 
     required_vars = [
-        "AUTO_POST_API_TOKEN",
-        "AUTO_POST_API_BASE_URL",
+        "HEIMDALL_API_TOKEN",
+        "HEIMDALL_API_BASE_URL",
     ]
 
     missing = [var for var in required_vars if not os.environ.get(var)]
