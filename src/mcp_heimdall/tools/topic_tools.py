@@ -1,11 +1,11 @@
-"""Tools for avatar resources."""
+"""Tools for topic resources."""
 
 from typing import Annotated, Optional
 
 from pydantic import Field
 
-from app import mcp
-from connectors.rest_client import api_get
+from ..app import mcp
+from ..connectors.rest_client import api_get
 
 
 def _workspace_header(workspace_id: str) -> dict:
@@ -13,30 +13,38 @@ def _workspace_header(workspace_id: str) -> dict:
 
 
 @mcp.tool()
-def list_avatars(
+def list_topics(
     workspace_id: Annotated[str, Field(description="Workspace ID")],
     page: Annotated[int, Field(description="Page number")] = 1,
     size: Annotated[int, Field(description="Page size")] = 20,
     name: Annotated[Optional[str], Field(description="Filter by name")] = None,
-    gender: Annotated[Optional[str], Field(description="Filter by gender")] = None,
 ) -> dict:
-    """List avatars for a workspace."""
+    """List topics for a workspace."""
     params: dict = {"page": page, "size": size}
     if name:
         params["name"] = name
-    if gender:
-        params["gender"] = gender
-    return api_get("list_avatars", params=params, extra_headers=_workspace_header(workspace_id))
+    return api_get("list_topics", params=params, extra_headers=_workspace_header(workspace_id))
 
 
 @mcp.tool()
-def get_avatar(
+def get_topic(
     workspace_id: Annotated[str, Field(description="Workspace ID")],
-    avatar_id: Annotated[str, Field(description="Avatar ID")],
+    topic_id: Annotated[str, Field(description="Topic ID")],
 ) -> dict:
-    """Get an avatar by ID."""
+    """Get a topic by ID."""
     return api_get(
-        "get_avatar",
-        path_params={"avatar_id": avatar_id},
+        "get_topic",
+        path_params={"topic_id": topic_id},
+        extra_headers=_workspace_header(workspace_id),
+    )
+
+
+@mcp.tool()
+def list_topic_categories(
+    workspace_id: Annotated[str, Field(description="Workspace ID")],
+) -> dict:
+    """List all available topic categories."""
+    return api_get(
+        "list_topic_categories",
         extra_headers=_workspace_header(workspace_id),
     )

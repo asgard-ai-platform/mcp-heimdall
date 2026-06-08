@@ -4,7 +4,7 @@ BASE_URL = os.environ.get("AUTO_POST_API_BASE_URL", "")
 API_VERSION = "v1"
 DEFAULT_PER_PAGE = 20
 
-from auth.bearer import get_auth_headers
+from ..auth.bearer import get_auth_headers
 
 ENDPOINTS = {
     # article

@@ -2,7 +2,7 @@
 
 import time
 import requests
-from config.settings import get_headers, get_url, DEFAULT_PER_PAGE
+from ..config.settings import get_headers, get_url, DEFAULT_PER_PAGE
 
 
 class ServiceAPIError(Exception):

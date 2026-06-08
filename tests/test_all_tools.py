@@ -12,33 +12,33 @@ from unittest.mock import patch, MagicMock, call
 
 import pytest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
 os.environ.setdefault("AUTO_POST_API_TOKEN", "test-token")
 os.environ.setdefault("AUTO_POST_API_BASE_URL", "https://api.example.com")
 
-import tools.article_tools
-import tools.avatar_tools
-import tools.account_tools
-import tools.app_tools
-import tools.blob_tools
-import tools.content_source_tools
-import tools.mission_tools
-import tools.publication_tools
-import tools.topic_tools
-import tools.workspace_tools
+import mcp_heimdall.tools.article_tools  # noqa: F401
+import mcp_heimdall.tools.avatar_tools  # noqa: F401
+import mcp_heimdall.tools.account_tools  # noqa: F401
+import mcp_heimdall.tools.app_tools  # noqa: F401
+import mcp_heimdall.tools.blob_tools  # noqa: F401
+import mcp_heimdall.tools.content_source_tools  # noqa: F401
+import mcp_heimdall.tools.mission_tools  # noqa: F401
+import mcp_heimdall.tools.publication_tools  # noqa: F401
+import mcp_heimdall.tools.topic_tools  # noqa: F401
+import mcp_heimdall.tools.workspace_tools  # noqa: F401
 
-from tools.article_tools import list_articles, get_article, list_article_templates, get_article_template
-from tools.avatar_tools import list_avatars, get_avatar
-from tools.account_tools import list_accounts, get_account, get_accounts_by_avatar
-from tools.app_tools import list_apps, get_app
-from tools.blob_tools import list_blobs
-from tools.content_source_tools import list_content_sources, get_content_source
-from tools.mission_tools import list_missions, get_mission, export_mission, list_mission_contents, get_mission_content
-from tools.publication_tools import list_publications, get_publication
-from tools.topic_tools import list_topics, get_topic, list_topic_categories
-from tools.workspace_tools import list_workspaces, get_workspace
-from app import mcp
+from mcp_heimdall.tools.article_tools import list_articles, get_article, list_article_templates, get_article_template
+from mcp_heimdall.tools.avatar_tools import list_avatars, get_avatar
+from mcp_heimdall.tools.account_tools import list_accounts, get_account, get_accounts_by_avatar
+from mcp_heimdall.tools.app_tools import list_apps, get_app
+from mcp_heimdall.tools.blob_tools import list_blobs
+from mcp_heimdall.tools.content_source_tools import list_content_sources, get_content_source
+from mcp_heimdall.tools.mission_tools import list_missions, get_mission, export_mission, list_mission_contents, get_mission_content
+from mcp_heimdall.tools.publication_tools import list_publications, get_publication
+from mcp_heimdall.tools.topic_tools import list_topics, get_topic, list_topic_categories
+from mcp_heimdall.tools.workspace_tools import list_workspaces, get_workspace
+from mcp_heimdall.app import mcp
 
 BASE = "https://api.example.com"
 FAKE_LIST = {"data": [], "total": 0, "page": 1, "size": 20}
@@ -53,7 +53,7 @@ def _mock_response(data: dict):
 
 
 def mock_api_get(return_value=None):
-    return patch("connectors.rest_client.requests.request", return_value=_mock_response(return_value or FAKE_LIST))
+    return patch("mcp_heimdall.connectors.rest_client.requests.request", return_value=_mock_response(return_value or FAKE_LIST))
 
 
 def get_call_kwargs(mock_req):

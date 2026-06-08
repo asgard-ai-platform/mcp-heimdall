@@ -8,8 +8,8 @@ from typing import Optional
 
 from pydantic import Field
 
-from app import mcp
-from connectors.rest_client import api_get, fetch_all_pages
+from ..app import mcp
+from ..connectors.rest_client import api_get, fetch_all_pages
 
 
 # =============================================================================

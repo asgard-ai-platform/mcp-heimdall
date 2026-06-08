@@ -4,8 +4,8 @@ from typing import Annotated, Optional
 
 from pydantic import Field
 
-from app import mcp
-from connectors.rest_client import api_get
+from ..app import mcp
+from ..connectors.rest_client import api_get
 
 
 def _workspace_header(workspace_id: str) -> dict:
