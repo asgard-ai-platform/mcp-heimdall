@@ -1,117 +1,203 @@
-# MCP Server 範本
+# mcp-heimdall
 
-建構 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 伺服器的可重用範本，將 AI 可呼叫的工具暴露給 AI 客戶端。[Asgard AI Platform](https://github.com/asgard-ai-platform) 開源生態系的一部分。
+**Heimdall** — Asgard 內容管理平台的 MCP (Model Context Protocol) 伺服器，提供只讀工具。
 
-[English](README.md)
+提供所有主要資源的 `list` 和 `get` 工具：文章、內容源、文章範本、頭像、帳戶、應用程式、任務、任務內容、發佈物、主題和工作區。
 
-## 功能特色
+---
 
-- **stdio JSON-RPC 2.0** — 標準 MCP 傳輸協定
-- **`@mcp.tool()` 裝飾器** — Pydantic 型別化工具註冊
-- **可插拔連接器** — REST、RSS、Scraper、MQTT、GraphQL
-- **可插拔認證** — Bearer Token、API Key、OAuth 2.0、無認證
-- **E2E 測試** — 即時 API 測試執行器
-- **Claude Code 整合** — `.mcp.json` 自動發現 + `CLAUDE.md`
-
-## 如何使用此範本
-
-1. 在 GitHub 上點擊 **「Use this template」**（或 Fork 此 Repo）
-2. 重新命名為 `mcp-{你的服務}` （例如 `mcp-ecpay`）
-3. 透過 init script 初始化 
-4. **選擇連接器** — 保留 `connectors/` 中需要的，刪除其餘
-5. **選擇認證** — 保留 `auth/` 中需要的，刪除其餘
-6. **設定** — 更新 `config/settings.py` 的 API 端點
-7. **建構工具** — 用你的實際工具替換 `tools/sample_tools.py`
-
-## 快速開始
+## 設置
 
 ```bash
-# 初始化專案（替換 {service} 佔位符）
-uv run --no-project python scripts/init.py
-
-# 環境設定
+# 1. 安裝依賴
 uv sync
 
-# 設定認證
+# 2. 複製並填入認證資訊
 cp .env.example .env
-# 編輯 .env 填入你的 API 認證資訊
-
-# 測試連線
-uv run --env-file .env python scripts/auth/test_connection.py
-
-# 啟動伺服器
-uv run --env-file .env python mcp_server.py
+# 編輯 .env — 設定 token。除非需要覆寫，否則 base URL 可省略：
+#   HEIMDALL_API_TOKEN=<your bearer token>
+#   HEIMDALL_API_BASE_URL=<API base URL override>
 ```
 
-## 專案結構
+---
 
-```
-mcp-{service}/
-├── app.py                  # MCPServer 單例
-├── mcp_server.py           # 入口（stdio 傳輸）
-├── config/settings.py      # API 端點、URL 建構、認證委派
-├── connectors/             # 資料來源連接器（選一個）
-│   ├── rest_client.py      #   HTTP REST（含重試＋分頁）
-│   ├── rss_client.py       #   RSS/Atom 訂閱解析
-│   ├── scraper_client.py   #   網頁爬取（BeautifulSoup）
-│   ├── mqtt_client.py      #   MQTT（IoT / 工業）
-│   └── graphql_client.py   #   GraphQL（Relay 分頁）
-├── auth/                   # 認證模組（選一個）
-│   ├── bearer.py           #   Bearer Token
-│   ├── api_key.py          #   API Key（Header 或 Query Param）
-│   ├── oauth2.py           #   OAuth 2.0 客戶端憑證
-│   └── none.py             #   無認證（公開 API）
-├── tools/                  # 你的 MCP 工具
-│   └── sample_tools.py     #   範例工具（請替換）
-├── tests/test_all_tools.py # E2E 測試執行器
-└── scripts/auth/test_connection.py
+## 執行
+
+```bash
+uv run mcp-heimdall
 ```
 
-## 連接器
-
-| 連接器 | 用途 | 額外依賴 |
-|--------|------|----------|
-| `rest_client.py` | REST API（大多數服務） | 無（使用 `requests`） |
-| `rss_client.py` | RSS/Atom 訂閱（新聞、部落格） | `feedparser` |
-| `scraper_client.py` | 網頁爬取（論壇、公開頁面） | `beautifulsoup4` |
-| `mqtt_client.py` | IoT / 工業（MQTT Broker） | `paho-mqtt` |
-| `graphql_client.py` | GraphQL API（Meta 等） | 無（使用 `requests`） |
-
-## 認證模組
-
-| 模組 | 模式 | 環境變數 |
-|------|------|----------|
-| `bearer.py` | `Authorization: Bearer <token>` | `SERVICE_API_TOKEN` |
-| `api_key.py` | Header 或 Query Param | `SERVICE_API_KEY` |
-| `oauth2.py` | 客戶端憑證 + 自動刷新 | `SERVICE_CLIENT_ID`、`SERVICE_CLIENT_SECRET` |
-| `none.py` | 無認證 | （無） |
-
-## 新增工具
-
-```python
-from app import mcp
-from pydantic import Field
-from connectors.rest_client import api_get
-
-@mcp.tool()
-def get_order(
-    order_id: str = Field(description="要查詢的訂單 ID"),
-) -> dict:
-    """取得特定訂單的詳細資訊。"""
-    return api_get("order_detail", path_params={"order_id": order_id})
+或明確指定：
+```bash
+uv run python -m mcp_heimdall.server
 ```
+
+---
 
 ## 測試
 
 ```bash
-uv run python scripts/auth/test_connection.py   # 驗證認證資訊
-uv run python tests/test_all_tools.py           # 執行所有工具 E2E 測試
+# 單元測試（模擬 HTTP，無需連接真實 API）
+uv run python -m pytest tests/test_all_tools.py -v
+```
+
+---
+
+## 組態
+
+| 環境變數             | 必需 | 預設值 | 說明                 |
+|----------------------|------|--------|----------------------|
+| `HEIMDALL_API_TOKEN` | 是   | —     | API Bearer Token     |
+| `HEIMDALL_API_BASE_URL` | 否 | `https://heimdall-api.asgard-ai.com` | API 基礎 URL 覆寫 |
+
+---
+
+## MCP 工具
+
+所有工作區範圍的工具都需要 `workspace_id` 參數。  
+使用 `list_workspaces` 先發現可用的工作區 ID。
+
+### 工作區
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_workspaces` | 列出目前使用者的所有工作區 | — |
+| `get_workspace` | 按 ID 取得工作區 | `workspace_id` |
+
+### 文章
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_articles` | 列出工作區中的文章 | `workspace_id`, `page`, `size` |
+| `get_article` | 按 ID 取得文章 | `workspace_id`, `article_id` |
+
+### 文章範本
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_article_templates` | 列出工作區中的文章範本 | `workspace_id`, `page`, `size` |
+| `get_article_template` | 按 ID 取得文章範本 | `workspace_id`, `article_template_id` |
+
+### 頭像
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_avatars` | 列出工作區中的頭像 | `workspace_id`, `page`, `size`, `name`\*, `gender`\* |
+| `get_avatar` | 按 ID 取得頭像 | `workspace_id`, `avatar_id` |
+
+### 帳戶（平台帳戶）
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_accounts` | 列出工作區中的平台帳戶 | `workspace_id`, `page`, `size`, `provider_type`\*, `app_id`\* |
+| `get_account` | 按 ID 取得平台帳戶 | `workspace_id`, `account_id` |
+| `get_accounts_by_avatar` | 取得連結到頭像的所有帳戶 | `workspace_id`, `avatar_id` |
+
+### 應用程式（OAuth 應用程式）
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_apps` | 列出工作區中的 OAuth 應用程式 | `workspace_id`, `page`, `size`, `provider_type`\* |
+| `get_app` | 按 ID 取得 OAuth 應用程式 | `workspace_id`, `app_id` |
+
+### Blob
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_blobs` | 列出工作區中的 Blob 記錄 | `workspace_id`, `page`, `size`, `filter_by`\*, `filter_value`\* |
+
+### 內容源
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_content_sources` | 列出工作區中的內容源 | `workspace_id`, `page`, `size` |
+| `get_content_source` | 按 ID 取得內容源 | `workspace_id`, `content_source_id` |
+
+### 任務
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_missions` | 列出工作區中的任務 | `workspace_id`, `page`, `size`, `topic_id`\*, `avatar_id`\*, `mission_type`\*, `q`\*, `sort_by`\*, `sort_order`\* |
+| `get_mission` | 按 ID 取得任務 | `workspace_id`, `mission_id` |
+| `export_mission` | 匯出任務及其所有內容 | `workspace_id`, `mission_id` |
+
+### 任務內容
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_mission_contents` | 列出工作區中的任務內容 | `workspace_id`, `page`, `size`, `mission_id`\*, `avatar_id`\*, `status`\* |
+| `get_mission_content` | 按 ID 取得任務內容 | `workspace_id`, `mission_content_id` |
+
+### 發佈物
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_publications` | 列出工作區中的發佈物 | `workspace_id`, `page`, `size` |
+| `get_publication` | 按 ID 取得發佈物 | `workspace_id`, `publication_id` |
+
+### 主題
+
+| 工具 | 說明 | 參數 |
+|------|------|------|
+| `list_topics` | 列出工作區中的主題 | `workspace_id`, `page`, `size`, `name`\* |
+| `get_topic` | 按 ID 取得主題 | `workspace_id`, `topic_id` |
+| `list_topic_categories` | 列出所有可用的主題分類 | `workspace_id` |
+
+\* 選用的篩選參數
+
+---
+
+## MCP 客戶端組態
+
+將下列內容新增到你的 MCP 客戶端組態中（例如 Claude Desktop `claude_desktop_config.json`）：
+
+```json
+{
+  "mcpServers": {
+    "heimdall": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
+      "env": {
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here"
+      }
+    }
+  }
+}
+```
+
+或使用 `.env` 檔案：
+
+```json
+{
+  "mcpServers": {
+    "heimdall": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--env-file", "/path/to/mcp-heimdall/.env",
+        "--directory", "/path/to/mcp-heimdall",
+        "mcp-heimdall"
+      ]
+    }
+  }
+}
+```
+
+---
+
+## 架構
+
+```
+stdio (JSON-RPC 2.0)
+  → mcp-heimdall (console script entry point)
+    → src/mcp_heimdall/server.py       — 入口點，匯入觸發工具註冊
+      → src/mcp_heimdall/app.py        — MCPServer 單例 (FastMCP "mcp-heimdall")
+        → src/mcp_heimdall/tools/*     — @mcp.tool() 裝飾的函數
+          → src/mcp_heimdall/connectors/rest_client.py  — HTTP 客戶端（含重試 + extra_headers 支援）
+            → src/mcp_heimdall/auth/bearer.py           — 讀取 HEIMDALL_API_TOKEN 環境變數
+              → src/mcp_heimdall/config/settings.py     — 基礎 URL + 端點對應表
 ```
 
 ## 授權
 
-MIT License — 詳見 [LICENSE](LICENSE)。
-
-## Asgard 生態系
-
-此範本驅動 63+ 個 MCP 伺服器，連接 AI 至電商、金融、政府開放資料、IoT、社群媒體等真實世界服務。查看完整 [Asgard AI Platform](https://github.com/asgard-ai-platform)。
+MIT

@@ -1,12 +1,10 @@
 {
   "mcpServers": {
-    "{service}": {
+    "heimdall": {
       "command": "uv",
-      "args": ["run", "mcp-service"],
-      "cwd": "${PWD}",
+      "args": ["run", "--directory", "${PWD}", "mcp-heimdall"],
       "env": {
-        "PYTHONPATH": "${PWD}",
-        "SERVICE_API_TOKEN": "${SERVICE_API_TOKEN}"
+        "HEIMDALL_API_TOKEN": "${HEIMDALL_API_TOKEN}"
       }
     }
   }

@@ -2,7 +2,7 @@
 
 import time
 import requests
-from config.settings import get_headers, get_url, DEFAULT_PER_PAGE
+from ..config.settings import get_headers, get_url, DEFAULT_PER_PAGE
 
 
 class ServiceAPIError(Exception):
@@ -21,6 +21,7 @@ def api_request(
     params: dict | None = None,
     json_body: dict | None = None,
     path_params: dict | None = None,
+    extra_headers: dict | None = None,
     retries: int = 3,
     timeout: int = 60,
 ) -> dict:
@@ -32,6 +33,7 @@ def api_request(
         params: Query parameters.
         json_body: JSON request body (for POST/PUT).
         path_params: Path parameters for URL substitution.
+        extra_headers: Additional headers to merge (e.g. x-asgard-workspace).
         retries: Number of retry attempts for transient errors.
         timeout: Request timeout in seconds.
 
@@ -43,6 +45,8 @@ def api_request(
     """
     url = get_url(endpoint_key, **(path_params or {}))
     headers = get_headers()
+    if extra_headers:
+        headers.update(extra_headers)
 
     for attempt in range(retries):
         try:
@@ -80,10 +84,11 @@ def api_get(
     endpoint_key: str,
     params: dict | None = None,
     path_params: dict | None = None,
+    extra_headers: dict | None = None,
     retries: int = 3,
 ) -> dict:
     """Convenience wrapper for GET requests."""
-    return api_request("GET", endpoint_key, params=params, path_params=path_params, retries=retries)
+    return api_request("GET", endpoint_key, params=params, path_params=path_params, extra_headers=extra_headers, retries=retries)
 
 
 def api_post(
