@@ -1,27 +1,71 @@
 # mcp-heimdall
 
+[![CI](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml/badge.svg)](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/mcp-heimdall.svg)](https://pypi.org/project/mcp-heimdall/)
+[![Python versions](https://img.shields.io/pypi/pyversions/mcp-heimdall.svg)](https://pypi.org/project/mcp-heimdall/)
+[![GitHub tag](https://img.shields.io/github/v/tag/asgard-ai-platform/mcp-heimdall)](https://github.com/asgard-ai-platform/mcp-heimdall/tags)
+[![GitHub stars](https://img.shields.io/github/stars/asgard-ai-platform/mcp-heimdall)](https://github.com/asgard-ai-platform/mcp-heimdall/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/asgard-ai-platform/mcp-heimdall)](https://github.com/asgard-ai-platform/mcp-heimdall/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/asgard-ai-platform/mcp-heimdall)](https://github.com/asgard-ai-platform/mcp-heimdall/commits/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io/)
+
 Heimdall — an MCP (Model Context Protocol) server that exposes read-only tools for Asgard's content management platform.
 
 Provides `list` and `get` tools for all major resources: articles, blobs, content sources, article templates, avatars, accounts, apps, missions, mission contents, publications, topics, and workspaces.
 
+[繁體中文](README.zh-TW.md)
+
+Part of the [Asgard AI Platform](https://github.com/asgard-ai-platform) open-source ecosystem.
+
 ---
 
-## Setup
+## What This Does
+
+- **23 MCP tools** covering workspace, article, avatar, account, app, blob, content source, mission, publication, and topic resources
+- **Read-only tool surface** for safe AI assistant access
+- **Bearer token authentication** through `HEIMDALL_API_TOKEN`
+- **Public-safe configuration** through environment variables and `.env.example`
+- **stdio transport** for local MCP clients
+
+See [docs/tools.md](docs/tools.md) for the full public tool reference.
+
+---
+
+## Quick Start
+
+### Install
 
 ```bash
-# 1. Install dependencies
-uv sync
+pip install mcp-heimdall
+```
 
-# 2. Copy and fill in your credentials
+Run with `uvx` without installing globally:
+
+```bash
+uvx mcp-heimdall
+```
+
+For local development:
+
+```bash
+git clone https://github.com/asgard-ai-platform/mcp-heimdall.git
+cd mcp-heimdall
+uv sync
+```
+
+### Configure
+
+```bash
 cp .env.example .env
 # Edit .env — set your token. The base URL is optional unless you need an override:
 #   HEIMDALL_API_TOKEN=<your bearer token>
 #   HEIMDALL_API_BASE_URL=<API base URL override>
 ```
 
----
+See [docs/configuration.md](docs/configuration.md) for details.
 
-## Run
+### Run
 
 ```bash
 uv run mcp-heimdall
@@ -32,13 +76,72 @@ Or explicitly:
 uv run python -m mcp_heimdall.server
 ```
 
+### Use with Claude Desktop
+
+Package install / `uvx` example:
+
+```json
+{
+  "mcpServers": {
+    "heimdall": {
+      "command": "uvx",
+      "args": ["mcp-heimdall"],
+      "env": {
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here"
+      }
+    }
+  }
+}
+```
+
+For a local checkout, run it through `uv` from the repository directory:
+
+```json
+{
+  "mcpServers": {
+    "heimdall": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-heimdall", "mcp-heimdall"],
+      "env": {
+        "HEIMDALL_API_TOKEN": "your_bearer_token_here"
+      }
+    }
+  }
+}
+```
+
+More examples are available in [examples/](examples/).
+
+### Use with Claude Code
+
+After installing the package and configuring environment variables, add the stdio MCP server:
+
+```bash
+claude mcp add heimdall -- mcp-heimdall
+```
+
+For a local checkout:
+
+```bash
+claude mcp add heimdall -- uv --directory /path/to/mcp-heimdall run mcp-heimdall
+```
+
 ---
 
 ## Test
 
 ```bash
+# Public import smoke test
+uv run python tests/test_imports.py
+
 # Unit tests (mocked HTTP, no live API needed)
 uv run python -m pytest tests/test_all_tools.py -v
+
+# Compile source and tests
+uv run python -m compileall src tests
+
+# Build source distribution and wheel
+uv build
 ```
 
 ---
@@ -149,7 +252,7 @@ Use `list_workspaces` first to discover available workspace IDs.
 
 ## MCP Client Configuration
 
-Add this to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`):
+Add this to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`) when running from a local checkout:
 
 ```json
 {
@@ -182,6 +285,22 @@ Or with a `.env` file:
   }
 }
 ```
+
+---
+
+## Documentation
+
+- [Configuration](docs/configuration.md)
+- [Tools](docs/tools.md)
+
+---
+
+## Boundaries
+
+- The server exposes read-only MCP tools only.
+- The server operates with the permissions of the configured `HEIMDALL_API_TOKEN`.
+- Heimdall write APIs are intentionally not exposed through this MCP server.
+- Public documentation intentionally avoids linking to private backend API documents.
 
 ---
 
