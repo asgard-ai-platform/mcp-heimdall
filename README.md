@@ -1,4 +1,4 @@
-# mcp-heimdall
+# MCP Heimdall
 
 [![CI](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml/badge.svg)](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/mcp-heimdall.svg)](https://pypi.org/project/mcp-heimdall/)
@@ -22,7 +22,7 @@ Part of the [Asgard AI Platform](https://github.com/asgard-ai-platform) open-sou
 
 ## What This Does
 
-- **23 MCP tools** covering workspace, article, avatar, account, app, blob, content source, mission, publication, and topic resources
+- **26 MCP tools** covering workspace, article, avatar, account, app, blob, content source, mission, publication, and topic resources
 - **Read-only tool surface** for safe AI assistant access
 - **Bearer token authentication** through `HEIMDALL_API_TOKEN`
 - **Public-safe configuration** through environment variables and `.env.example`
@@ -43,7 +43,7 @@ pip install mcp-heimdall
 Run with `uvx` without installing globally:
 
 ```bash
-uvx mcp-heimdall
+uvx --from mcp-heimdall mcp-heimdall
 ```
 
 For local development:
@@ -54,26 +54,28 @@ cd mcp-heimdall
 uv sync
 ```
 
-### Configure
+Set your API token:
 
 ```bash
-cp .env.example .env
-# Edit .env — set your token. The base URL is optional unless you need an override:
-#   HEIMDALL_API_TOKEN=<your bearer token>
-#   HEIMDALL_API_BASE_URL=<API base URL override>
+export HEIMDALL_API_TOKEN=your_bearer_token_here
 ```
+
+For local development, copy `.env.example` to `.env` and set `HEIMDALL_API_TOKEN`. `HEIMDALL_API_BASE_URL` is optional unless you need an override.
 
 See [docs/configuration.md](docs/configuration.md) for details.
 
-### Run
+### Use with Claude Code
+
+After installing the package and configuring environment variables, add the stdio MCP server:
 
 ```bash
-uv run mcp-heimdall
+claude mcp add --transport stdio heimdall -- mcp-heimdall
 ```
 
-Or explicitly:
+For a local checkout:
+
 ```bash
-uv run python -m mcp_heimdall.server
+claude mcp add --transport stdio heimdall -- uv --directory /path/to/mcp-heimdall run mcp-heimdall
 ```
 
 ### Use with Claude Desktop
@@ -112,20 +114,6 @@ For a local checkout, run it through `uv` from the repository directory:
 
 More examples are available in [examples/](examples/).
 
-### Use with Claude Code
-
-After installing the package and configuring environment variables, add the stdio MCP server:
-
-```bash
-claude mcp add heimdall -- mcp-heimdall
-```
-
-For a local checkout:
-
-```bash
-claude mcp add heimdall -- uv --directory /path/to/mcp-heimdall run mcp-heimdall
-```
-
 ---
 
 ## Test
@@ -155,7 +143,7 @@ uv build
 
 ---
 
-## MCP Tools
+## Tools (26)
 
 All workspace-scoped tools require a `workspace_id` parameter.  
 Use `list_workspaces` first to discover available workspace IDs.

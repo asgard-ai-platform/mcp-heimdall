@@ -5,31 +5,31 @@ build-backend = "hatchling.build"
 [project]
 name = "mcp-heimdall"
 version = "0.1.0"
-description = "Heimdall — MCP Server with AI-callable read-only tools via Model Context Protocol"
+description = "MCP server exposing 26 AI Agent-callable read-only tools for Asgard content management"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    {name = "Asgard AI Platform", email = "dev@asgard.ai"},
+    {name = "Asgard AI Platform"},
 ]
 keywords = [
     "mcp",
-    "mcp-server",
-    "model-context-protocol",
-    "ai-tools",
     "heimdall",
     "asgard",
+    "content-management",
+    "ai-agent",
+    "claude",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP",
 ]
 
 dependencies = [
