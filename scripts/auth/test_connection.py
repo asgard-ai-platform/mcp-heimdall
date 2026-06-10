@@ -7,12 +7,18 @@ Usage:
     python scripts/auth/test_connection.py
 """
 
-import sys
 import os
+import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src"))
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        "src",
+    ),
+)
 
-from mcp_heimdall.config.settings import get_headers, get_url, BASE_URL
+from mcp_heimdall.config.settings import BASE_URL, get_headers, get_url
 
 
 def check_env_vars():
@@ -24,7 +30,7 @@ def check_env_vars():
     missing = [var for var in required_vars if not os.environ.get(var)]
 
     if missing:
-        print(f"  FAIL: Missing environment variables:")
+        print("  FAIL: Missing environment variables:")
         for var in missing:
             print(f"    - {var}")
         return False
@@ -53,13 +59,13 @@ def check_connection():
         print(f"  Status: {response.status_code}")
 
         if response.status_code == 200:
-            print(f"  OK: Connection successful.")
+            print("  OK: Connection successful.")
             return True
         elif response.status_code == 401:
-            print(f"  FAIL: Authentication failed. Check your credentials.")
+            print("  FAIL: Authentication failed. Check your credentials.")
             return False
         elif response.status_code == 403:
-            print(f"  FAIL: Access forbidden. Check your permissions/scopes.")
+            print("  FAIL: Access forbidden. Check your permissions/scopes.")
             return False
         else:
             print(f"  WARN: Unexpected status code {response.status_code}")
@@ -70,7 +76,7 @@ def check_connection():
         print(f"  FAIL: Cannot connect to {BASE_URL}")
         return False
     except requests.exceptions.Timeout:
-        print(f"  FAIL: Connection timed out.")
+        print("  FAIL: Connection timed out.")
         return False
     except Exception as e:
         print(f"  FAIL: {e}")

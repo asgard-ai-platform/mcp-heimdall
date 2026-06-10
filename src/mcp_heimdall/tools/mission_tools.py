@@ -20,7 +20,10 @@ def list_missions(
     topic_id: Annotated[Optional[str], Field(description="Filter by topic ID")] = None,
     avatar_id: Annotated[Optional[str], Field(description="Filter by avatar ID")] = None,
     mission_type: Annotated[Optional[str], Field(description="Filter by mission type")] = None,
-    q: Annotated[Optional[str], Field(description="Search by keywords in topic titles, avatar names, or descriptions")] = None,
+    q: Annotated[
+        Optional[str],
+        Field(description="Search by keywords in topic titles, avatar names, or descriptions"),
+    ] = None,
     sort_by: Annotated[Optional[str], Field(description="Sort by field")] = None,
     sort_order: Annotated[Optional[str], Field(description="Sort order: asc or desc")] = None,
 ) -> dict:
@@ -74,7 +77,10 @@ def list_mission_contents(
     size: Annotated[int, Field(description="Page size")] = 20,
     mission_id: Annotated[Optional[str], Field(description="Filter by mission ID")] = None,
     avatar_id: Annotated[Optional[str], Field(description="Filter by avatar ID")] = None,
-    status: Annotated[Optional[str], Field(description="Filter by status: pending, generating, completed, failed")] = None,
+    status: Annotated[
+        Optional[str],
+        Field(description="Filter by status: pending, generating, completed, failed"),
+    ] = None,
 ) -> dict:
     """List mission contents for a workspace."""
     params: dict = {"page": page, "size": size}
@@ -84,7 +90,9 @@ def list_mission_contents(
         params["avatar_id"] = avatar_id
     if status:
         params["status"] = status
-    return api_get("list_mission_contents", params=params, extra_headers=_workspace_header(workspace_id))
+    return api_get(
+        "list_mission_contents", params=params, extra_headers=_workspace_header(workspace_id)
+    )
 
 
 @mcp.tool()

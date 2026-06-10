@@ -1,10 +1,10 @@
 import os
 
+from ..auth.bearer import get_auth_headers
+
 BASE_URL = os.environ.get("HEIMDALL_API_BASE_URL", "https://heimdall-api.asgard-ai.com").rstrip("/")
 API_VERSION = "v1"
 DEFAULT_PER_PAGE = 20
-
-from ..auth.bearer import get_auth_headers
 
 ENDPOINTS = {
     # article

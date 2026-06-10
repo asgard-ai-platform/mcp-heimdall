@@ -15,6 +15,8 @@ def test_package_imports():
 
 def test_console_script_registered():
     entry_points = importlib.metadata.distribution("mcp-heimdall").entry_points
-    scripts = {entry.name: entry.value for entry in entry_points if entry.group == "console_scripts"}
+    scripts = {
+        entry.name: entry.value for entry in entry_points if entry.group == "console_scripts"
+    }
 
     assert scripts["mcp-heimdall"] == "mcp_heimdall.server:main"
