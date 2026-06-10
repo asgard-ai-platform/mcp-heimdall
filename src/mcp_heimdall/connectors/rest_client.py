@@ -1,8 +1,10 @@
 """REST API connector with retry, pagination, and rate limiting."""
 
 import time
+
 import requests
-from ..config.settings import get_headers, get_url, DEFAULT_PER_PAGE
+
+from ..config.settings import DEFAULT_PER_PAGE, get_headers, get_url
 
 
 class ServiceAPIError(Exception):
@@ -88,7 +90,14 @@ def api_get(
     retries: int = 3,
 ) -> dict:
     """Convenience wrapper for GET requests."""
-    return api_request("GET", endpoint_key, params=params, path_params=path_params, extra_headers=extra_headers, retries=retries)
+    return api_request(
+        "GET",
+        endpoint_key,
+        params=params,
+        path_params=path_params,
+        extra_headers=extra_headers,
+        retries=retries,
+    )
 
 
 def api_post(
@@ -98,7 +107,9 @@ def api_post(
     path_params: dict | None = None,
 ) -> dict:
     """Convenience wrapper for POST requests."""
-    return api_request("POST", endpoint_key, params=params, json_body=json_body, path_params=path_params)
+    return api_request(
+        "POST", endpoint_key, params=params, json_body=json_body, path_params=path_params
+    )
 
 
 def api_put(
@@ -108,7 +119,9 @@ def api_put(
     path_params: dict | None = None,
 ) -> dict:
     """Convenience wrapper for PUT requests."""
-    return api_request("PUT", endpoint_key, params=params, json_body=json_body, path_params=path_params)
+    return api_request(
+        "PUT", endpoint_key, params=params, json_body=json_body, path_params=path_params
+    )
 
 
 def api_delete(

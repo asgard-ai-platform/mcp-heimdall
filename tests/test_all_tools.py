@@ -5,40 +5,48 @@ Run with:
     uv run python -m pytest tests/test_all_tools.py -v
 """
 
-import sys
-import os
 import asyncio
-from unittest.mock import patch, MagicMock, call
-
-import pytest
+import os
+import sys
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
 os.environ.setdefault("HEIMDALL_API_TOKEN", "test-token")
 os.environ.setdefault("HEIMDALL_API_BASE_URL", "https://api.example.com/")
 
-import mcp_heimdall.tools.article_tools  # noqa: F401
-import mcp_heimdall.tools.avatar_tools  # noqa: F401
 import mcp_heimdall.tools.account_tools  # noqa: F401
 import mcp_heimdall.tools.app_tools  # noqa: F401
+import mcp_heimdall.tools.article_tools  # noqa: F401
+import mcp_heimdall.tools.avatar_tools  # noqa: F401
 import mcp_heimdall.tools.blob_tools  # noqa: F401
 import mcp_heimdall.tools.content_source_tools  # noqa: F401
 import mcp_heimdall.tools.mission_tools  # noqa: F401
 import mcp_heimdall.tools.publication_tools  # noqa: F401
 import mcp_heimdall.tools.topic_tools  # noqa: F401
 import mcp_heimdall.tools.workspace_tools  # noqa: F401
-
-from mcp_heimdall.tools.article_tools import list_articles, get_article, list_article_templates, get_article_template
-from mcp_heimdall.tools.avatar_tools import list_avatars, get_avatar
-from mcp_heimdall.tools.account_tools import list_accounts, get_account, get_accounts_by_avatar
-from mcp_heimdall.tools.app_tools import list_apps, get_app
-from mcp_heimdall.tools.blob_tools import list_blobs
-from mcp_heimdall.tools.content_source_tools import list_content_sources, get_content_source
-from mcp_heimdall.tools.mission_tools import list_missions, get_mission, export_mission, list_mission_contents, get_mission_content
-from mcp_heimdall.tools.publication_tools import list_publications, get_publication
-from mcp_heimdall.tools.topic_tools import list_topics, get_topic, list_topic_categories
-from mcp_heimdall.tools.workspace_tools import list_workspaces, get_workspace
 from mcp_heimdall.app import mcp
+from mcp_heimdall.tools.account_tools import get_account, get_accounts_by_avatar, list_accounts
+from mcp_heimdall.tools.app_tools import get_app, list_apps
+from mcp_heimdall.tools.article_tools import (
+    get_article,
+    get_article_template,
+    list_article_templates,
+    list_articles,
+)
+from mcp_heimdall.tools.avatar_tools import get_avatar, list_avatars
+from mcp_heimdall.tools.blob_tools import list_blobs
+from mcp_heimdall.tools.content_source_tools import get_content_source, list_content_sources
+from mcp_heimdall.tools.mission_tools import (
+    export_mission,
+    get_mission,
+    get_mission_content,
+    list_mission_contents,
+    list_missions,
+)
+from mcp_heimdall.tools.publication_tools import get_publication, list_publications
+from mcp_heimdall.tools.topic_tools import get_topic, list_topic_categories, list_topics
+from mcp_heimdall.tools.workspace_tools import get_workspace, list_workspaces
 
 BASE = "https://api.example.com"
 FAKE_LIST = {"data": [], "total": 0, "page": 1, "size": 20}
@@ -53,7 +61,10 @@ def _mock_response(data: dict):
 
 
 def mock_api_get(return_value=None):
-    return patch("mcp_heimdall.connectors.rest_client.requests.request", return_value=_mock_response(return_value or FAKE_LIST))
+    return patch(
+        "mcp_heimdall.connectors.rest_client.requests.request",
+        return_value=_mock_response(return_value or FAKE_LIST),
+    )
 
 
 def get_call_kwargs(mock_req):
@@ -137,7 +148,12 @@ class TestAvatarTools:
     def test_list_avatars_optional_filters(self):
         with mock_api_get() as mock_req:
             list_avatars(workspace_id="ws-1", name="Alice", gender="female")
-        assert get_call_kwargs(mock_req)["params"] == {"page": 1, "size": 20, "name": "Alice", "gender": "female"}
+        assert get_call_kwargs(mock_req)["params"] == {
+            "page": 1,
+            "size": 20,
+            "name": "Alice",
+            "gender": "female",
+        }
 
     def test_get_avatar_url(self):
         with mock_api_get(FAKE_ITEM) as mock_req:
@@ -160,7 +176,12 @@ class TestAccountTools:
     def test_list_accounts_optional_filters(self):
         with mock_api_get() as mock_req:
             list_accounts(workspace_id="ws-1", provider_type="twitter", app_id="app-1")
-        assert get_call_kwargs(mock_req)["params"] == {"page": 1, "size": 20, "provider_type": "twitter", "app_id": "app-1"}
+        assert get_call_kwargs(mock_req)["params"] == {
+            "page": 1,
+            "size": 20,
+            "provider_type": "twitter",
+            "app_id": "app-1",
+        }
 
     def test_get_account_url(self):
         with mock_api_get(FAKE_ITEM) as mock_req:
@@ -279,7 +300,9 @@ class TestMissionTools:
 
     def test_list_mission_contents_filters(self):
         with mock_api_get() as mock_req:
-            list_mission_contents(workspace_id="ws-1", mission_id="m-1", avatar_id="av-1", status="completed")
+            list_mission_contents(
+                workspace_id="ws-1", mission_id="m-1", avatar_id="av-1", status="completed"
+            )
         params = get_call_kwargs(mock_req)["params"]
         assert params["mission_id"] == "m-1"
         assert params["status"] == "completed"
