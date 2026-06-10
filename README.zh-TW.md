@@ -1,4 +1,4 @@
-# mcp-heimdall
+# MCP Heimdall
 
 [![CI](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml/badge.svg)](https://github.com/asgard-ai-platform/mcp-heimdall/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/mcp-heimdall.svg)](https://pypi.org/project/mcp-heimdall/)
@@ -155,7 +155,7 @@ uv build
 
 ---
 
-## MCP 工具
+## 工具清單（26 個）
 
 所有工作區範圍的工具都需要 `workspace_id` 參數。  
 使用 `list_workspaces` 先發現可用的工作區 ID。
